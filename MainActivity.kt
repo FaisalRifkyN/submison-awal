@@ -41,35 +41,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpStoryList() {
         viewModel.getAllStory().observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        showLoading(true)
+            when (result) {
+                is Result.Loading -> showLoading(true)
+                is Result.Success -> {
+                    showLoading(false)
+                    result.data?.let { newData ->
+                        listStoryItem.clear()
+                        listStoryItem.addAll(addDataParcelable(newData))
+                        setListStory()
                     }
+                }
 
-                    is Result.Success -> {
-                        showLoading(false)
-                        val newData = result.data
-                        if (newData.isNotEmpty()) {
-                            val add = addDataParcelable(newData)
-                            listStoryItem.clear()
-                            listStoryItem.addAll(add)
-                            setListStory()
-                        } else {
-                            showListNull(true)
-                        }
-                    }
-
-                    is Result.Error -> {
-                        showLoading(false)
-                        Toast.makeText(
-                            this,
-                            "Terjadi Kesalahan " + result.error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    else -> {}
+                is Result.Error -> {
+                    showLoading(false)
+                    Toast.makeText(this, "Terjadi Kesalahan " + result.error, Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -77,12 +63,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDataParcelable(list: List<ListStoryItem>): ArrayList<StoryList> {
         val NewlistStory = ArrayList<StoryList>()
-        for (i in list.indices) {
+        list.forEach { item ->
             val story = StoryList(
-                list[i].id.toString(),
-                list[i].name.toString(),
-                list[i].photoUrl.toString(),
-                list[i].description.toString()
+                item.id.toString(),
+                item.name.toString(),
+                item.photoUrl.toString(),
+                item.description.toString()
             )
             NewlistStory.add(story)
         }
@@ -130,10 +116,6 @@ class MainActivity : AppCompatActivity() {
         binding?.progressBar?.visibility = if (state) View.VISIBLE else View.GONE
     }
 
-    private fun showListNull(state: Boolean) {
-        binding?.tvListKosong?.visibility = if (state) View.VISIBLE else View.GONE
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.getAllStory()
@@ -143,6 +125,4 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         binding = null
     }
-
-
 }
