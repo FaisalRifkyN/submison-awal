@@ -112,14 +112,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding?.imgViewLogo, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 5000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
-
-        val signUp =
-            ObjectAnimator.ofFloat(binding?.txtViewRegister, View.ALPHA, 1f).setDuration(300)
         val title =
             ObjectAnimator.ofFloat(binding?.txtViewSubTitleSignUp, View.ALPHA, 1f).setDuration(300)
         val textViewName =
@@ -136,44 +128,17 @@ class RegisterActivity : AppCompatActivity() {
             ObjectAnimator.ofFloat(binding?.edtTextPassword, View.ALPHA, 1f).setDuration(300)
         val btnRegister =
             ObjectAnimator.ofFloat(binding?.buttonRegister, View.ALPHA, 1f).setDuration(300)
-        val donthaveacount =
-            ObjectAnimator.ofFloat(binding?.textViewDonTHaveAnAccount, View.ALPHA, 1f)
-                .setDuration(300)
-        val sign = ObjectAnimator.ofFloat(binding?.textViewLogin, View.ALPHA, 1f).setDuration(300)
 
-        val tvsign = AnimatorSet().apply {
-            playTogether(donthaveacount, sign)
-        }
-
-        val name = AnimatorSet().apply {
-            playTogether(
-                textViewName,
-                nameInputText
-            )
-        }
-
-        val email = AnimatorSet().apply {
-            playTogether(
-                textViewEmail,
-                emailInputText
-            )
-        }
-
-        val password = AnimatorSet().apply {
-            playTogether(
-                textViewPassword,
-                passwordInputText
-            )
-        }
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(
-            signUp,
             title,
-            name,
-            email,
-            password,
-            btnRegister,
-            tvsign
+            textViewName,
+            nameInputText,
+            textViewEmail,
+            emailInputText,
+            textViewPassword,
+            passwordInputText,
+            btnRegister
         )
         animatorSet.start()
     }
